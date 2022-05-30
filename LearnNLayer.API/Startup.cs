@@ -1,37 +1,54 @@
+using LearnNLayer.Core.IUnitOfWork;
+using LearnNLayer.Core.Repositories;
+using LearnNLayer.Repository;
+using LearnNLayer.Repository.Repositories;
+using LearnNLayer.Repository.UnitOfWorks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace LearnNLayer.API
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>)); // generic olduðu için typeof ile belirttim
+
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("SqlConnection"),opt =>
+                {
+                    // benim migration dosyalarým repository katmanýnda oluþacak , appdbcontext sýnýfý da orda ,
+                    // oyüzden bunlarýn bulunduðu assembly yi uygulamaya haberdar etmem lazým , yani mesela benim appdbcontext sýnýfým
+                    // api katmanýnda içinde deðil repository katmaný altýnda uygulamadan bunu haberdar etmem lazým
+                    // reflection kullanarak appdbcontext sýnýfýnýn bulunduðu assembly adýný aldý
+                    opt.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
+                }));
+            
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LearnNLayer.API", Version = "v1" });
             });
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
