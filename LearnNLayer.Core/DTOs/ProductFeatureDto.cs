@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LearnNLayer.Core.DTOs
 {
-    public class ProductFeature
+    public class ProductFeatureDto
     {
         public int Id { get; set; }
         public string Color { get; set; }

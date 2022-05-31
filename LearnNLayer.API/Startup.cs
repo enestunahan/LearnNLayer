@@ -1,8 +1,11 @@
+using AutoMapper;
 using LearnNLayer.Core.IUnitOfWork;
 using LearnNLayer.Core.Repositories;
+using LearnNLayer.Core.Services;
 using LearnNLayer.Repository;
 using LearnNLayer.Repository.Repositories;
 using LearnNLayer.Repository.UnitOfWorks;
+using LearnNLayer.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +33,10 @@ namespace LearnNLayer.API
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>)); // generic olduðu için typeof ile belirttim
+            services.AddScoped(typeof(IService<>), typeof(Service<>));
+
+
+            services.AddAutoMapper(typeof(Profile));
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnection"),opt =>
