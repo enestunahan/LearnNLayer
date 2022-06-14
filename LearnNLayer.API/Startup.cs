@@ -5,6 +5,7 @@ using LearnNLayer.Core.Services;
 using LearnNLayer.Repository;
 using LearnNLayer.Repository.Repositories;
 using LearnNLayer.Repository.UnitOfWorks;
+using LearnNLayer.Service.Mapping;
 using LearnNLayer.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,8 +36,7 @@ namespace LearnNLayer.API
             services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>)); // generic olduðu için typeof ile belirttim
             services.AddScoped(typeof(IService<>), typeof(Service<>));
 
-
-            services.AddAutoMapper(typeof(Profile));
+            services.AddAutoMapper(typeof(MapProfile));
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnection"),opt =>
