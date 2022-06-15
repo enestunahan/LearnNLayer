@@ -36,6 +36,11 @@ namespace LearnNLayer.API
             services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>)); // generic olduðu için typeof ile belirttim
             services.AddScoped(typeof(IService<>), typeof(Service<>));
 
+
+            services.AddScoped<IProductService,ProductService>();
+            services.AddScoped<IProductRepository,ProductRepository>();
+
+
             services.AddAutoMapper(typeof(MapProfile));
 
             services.AddDbContext<AppDbContext>(options =>
