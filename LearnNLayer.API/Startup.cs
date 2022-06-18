@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using LearnNLayer.Core.IUnitOfWork;
 using LearnNLayer.Core.Repositories;
 using LearnNLayer.Core.Services;
@@ -7,6 +8,7 @@ using LearnNLayer.Repository.Repositories;
 using LearnNLayer.Repository.UnitOfWorks;
 using LearnNLayer.Service.Mapping;
 using LearnNLayer.Service.Services;
+using LearnNLayer.Service.Validations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -54,9 +56,9 @@ namespace LearnNLayer.API
                     // reflection kullanarak appdbcontext sýnýfýnýn bulunduðu assembly adýný aldý
                     opt.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
                 }));
-            
-            
-            services.AddControllers();
+
+
+            services.AddControllers().AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LearnNLayer.API", Version = "v1" });
